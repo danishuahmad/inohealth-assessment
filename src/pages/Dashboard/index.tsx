@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import health_data from "../../assets/data.json";
 import RadialBiomarkerChart, {
@@ -234,8 +234,8 @@ const Dashboard = () => {
   );
 
   return (
-    <Box flexDirection="column" sx={{ minHeight: "80vh" }}>
-      <Stack flexDirection="row" gap={2}>
+    <Stack sx={{ maxHeight: "100%" , pb: 2 }}>
+      <Stack flexDirection="row" gap={1}>
         <Stack flex={1}>
           <DateFilter
             selectedDateId={dateFilter}
@@ -262,14 +262,14 @@ const Dashboard = () => {
               "0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)",
             borderRadius: "15px",
             // FIX: Ensure the container has enough height to render the chart
-            minHeight: "500px",
           }}
-          p={3}
+          px={2}
+          py={2}
         >
           <RadialBiomarkerChart
             data={data}
             showCentralText
-            centralNumber={6} // Set the desired number here
+            centralNumber={data.length} // Set the desired number here
             centralLabel="Optimal Biomarkers" // Set the desired label here
           />
         </Stack>
@@ -289,7 +289,7 @@ const Dashboard = () => {
           />
         </Stack>
       </Stack>
-      <Stack flex={1} sx={{ backgroundColor: "white" }}>
+      <Stack>
         <SubstanceHistoryModal
           open={!!substanceHistoryToShow}
           onClose={() => setSubstanceHistoryToShow(undefined)}
@@ -307,7 +307,7 @@ const Dashboard = () => {
             }
         </SubstanceHistoryModal>
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 

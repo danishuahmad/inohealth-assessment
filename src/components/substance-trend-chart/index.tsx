@@ -2,9 +2,6 @@ import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { Stack, Typography } from '@mui/material';
 
-// Mocking @mui/material components for a self-contained, runnable file
-
-// --- Component Interfaces and Types ---
 interface DataPoint {
   date: string;
   value: number;
@@ -18,7 +15,6 @@ export type LineChartProps = {
   color: string
 }
 
-// Increased bottom margin from 40 to 80 to prevent rotated X-axis labels from cutting off.
 const CHART_MARGIN = { top: 20, right: 30, bottom: 80, left: 50 };
 const DEFAULT_MIN_HEIGHT = 200;
 const DEFAULT_MIN_WIDTH = 300;
@@ -237,7 +233,7 @@ const LineChart = ({
       .datum(data)
       .attr('fill', 'none')
       .attr('stroke', color) 
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 0.8)
       .attr('d', lineGenerator);
 
     // Circles

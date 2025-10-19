@@ -30,7 +30,7 @@ const ResultRow = ({ result, onSelect }: ResultRowProps) => {
 
   const handleSelect = () => {
     onSelect(result.id);
-  }
+  };
 
   const trendIcon = useMemo(() => {
     const isIncreased = result.changePercentage > 0;
@@ -45,7 +45,7 @@ const ResultRow = ({ result, onSelect }: ResultRowProps) => {
   return (
     <Stack
       direction="row"
-      p={1}
+      p={0.5}
       alignItems="center"
       justifyContent="space-between"
     >
@@ -78,11 +78,11 @@ const ResultRow = ({ result, onSelect }: ResultRowProps) => {
             Optimal: {result.rangeMin} - {result.rangeMax} {result.unit}
           </Typography>
         </Stack>
-        <Stack>
+        <Stack alignItems={"flex-end"}>
           <Stack
             flexDirection="row"
             alignItems="center"
-            sx={{ color: "text.secondary" }}
+            sx={{ color: "text.secondary", maxWidth: 83, maxHeight: 30 }}
           >
             <Typography sx={{ fontWeight: 400, fontSize: 20 }}>
               {result.value}
@@ -96,7 +96,7 @@ const ResultRow = ({ result, onSelect }: ResultRowProps) => {
               fontSize: "12px",
               minHeight: "30px",
               height: "30px",
-              minWidth: "auto",
+              width: "86px",
               borderRadius: "30px",
               textTransform: "none",
               color: "text.secondary",
@@ -139,7 +139,7 @@ type ReportDetailProps = {
 /**
  * Main Component
  */
-const ReportDetail = ({ data , onSelect: handleSelect}: ReportDetailProps) => {
+const ReportDetail = ({ data, onSelect: handleSelect }: ReportDetailProps) => {
   return (
     <Stack
       gap={1}
@@ -157,26 +157,8 @@ const ReportDetail = ({ data , onSelect: handleSelect}: ReportDetailProps) => {
       <Typography sx={{ fontWeight: 500, fontSize: 12, color: "#C4C4C4" }}>
         {new Date(data[0]?.date).toLocaleDateString()}
       </Typography>
-      <Typography
-        sx={{ fontWeight: 400, fontSize: 14, color: "text.secondary", mb: 1 }}
-      >
-        This section provides detailed insights into your most recent lab
-        results, highlighting key biomarkers and their comparison to last
-        measurements.
-      </Typography>
       {data.map((result) => (
-        <Stack
-          key={`report-detail-${result.date}-${result.id}`}
-          id="sub-container"
-          // --- STYLES ADDED/UPDATED HERE ---
-          sx={
-            {
-              // Card Appearance
-              // Subtle Box Shadow to make it "float"
-              // Optional: transition for a smooth look on hover or updates
-            }
-          }
-        >
+        <Stack key={`report-detail-${result.date}-${result.id}`}>
           <ResultRow result={result} onSelect={handleSelect} />
         </Stack>
       ))}

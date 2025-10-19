@@ -1,6 +1,8 @@
 import { Button, Typography, Stack, FormControl, Select, MenuItem, Chip } from '@mui/material';
 import { type SelectChangeEvent } from '@mui/material/Select';
 
+import DoneIcon from '@mui/icons-material/Done';
+
 interface FilterData {
   id: string;
   label: string;
@@ -69,15 +71,6 @@ const MultiSelect = ({ selectedIds, options, onChange}: MultiSelectProps) => {
                       height: '20px'
                 }} />
                 <Typography fontSize={14}>Select Filters...</Typography>
-                
-                {/* {getLabelsFromIds(selected).map((value) => (
-                  <Chip key={value} label={value} size="small" sx={{ 
-                      backgroundColor: '#C2C2C2', // Translucent light gray
-                      color: '#000', 
-                      fontSize: '11px',
-                      height: '20px'
-                  }} />
-                ))} */}
               </Stack>
             );
           }}
@@ -111,12 +104,33 @@ const MultiSelect = ({ selectedIds, options, onChange}: MultiSelectProps) => {
               key={filter.id}
               value={filter.id}
               sx={{ 
+                fontWeight: 300,
                 borderRadius: '10px', 
                 m: '0 8px', 
-                width: 'calc(100% - 16px)' 
+                width: 'calc(100% - 16px)'
+                // selected styling
+                , '&.Mui-selected': {
+                  fontWeight: 500,
+                  background: 'none', // Light blue for selected items
+                  borderRadius: '0px'
+                  , '&:hover': {
+                    background: 'none',
+                    borderRadius: '0px',
+                    fontWeight: 500 
+                  }
+                } 
+                , '&:hover': {
+                  background: 'none',
+                  borderRadius: '0px',
+                  fontWeight: 500 
+                }
               }}
             >
               {filter.label}
+              {/* show tick if label is selected */}
+              {selectedIds.indexOf(filter.id) > -1 && (
+                <DoneIcon sx={{ height: 14, marginLeft: 'auto', color: 'text.primary' }} />                
+              )}
             </MenuItem>
           ))}
         </Select>
