@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useMemo, useState, useCallback } from 'react'; // ADDED useCallback
 import * as d3 from 'd3';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 // Define the new data structure
 export type DataPoint = {
@@ -180,123 +180,141 @@ const RadialChart: React.FC<RadialChartProps> = ({
 
 
   // --- D3 Drawing Logic (Dependencies now stable) ---
-  useEffect(() => {
-    // Note: showTooltip and hideTooltip are NOT in the dependency array here.
-    // We rely on them being stable (via useCallback) when used in the D3 listeners.
-    if (!svgRef.current || data.length === 0 || width === 0 || height === 0) return; 
+useEffect(() => {
+  if (!svgRef.current || data.length === 0 || width === 0 || height === 0) return;
 
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+  const svg = d3.select(svgRef.current);
+  svg.selectAll('*').remove();
 
-    const centerX = width / 2;
-    const centerY = height / 2;
-    
-    const g = svg.append('g').attr('transform', `translate(${centerX},${centerY})`);
+  const centerX = width / 2;
+  const centerY = height / 2;
 
-    const radiusScale = d3.scaleLinear()
-      .domain([0, 100])
-      .range([currentInnerRadius, currentOuterRadius]);
+  const g = svg.append('g').attr('transform', `translate(${centerX},${centerY})`);
 
-    // 1. Draw the concentric circles (grid lines)
-    const numRings = 4;
-    const ringStep = (currentOuterRadius - currentInnerRadius) / numRings;
+  const radiusScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([currentInnerRadius, currentOuterRadius]);
 
-    g.selectAll('.grid-circle')
-      .data(d3.range(numRings + 1))
-      .enter()
-      .append('circle')
-      .attr('class', 'grid-circle')
-      .attr('r', 0)
-      .attr('fill', 'none')
-      .attr('stroke', '#ccc')
-      .attr('stroke-dasharray', '2,2')
-      .attr('opacity', 0)
-      .transition()
-      .duration(800)
-      .delay((_d, i) => i * 100)
-      .attr('r', (d) => currentInnerRadius + d * ringStep)
-      .attr('opacity', 1);
-      
-    // White background for the empty center 
-    g.append('circle')
-      .attr('class', 'center-fill')
-      .attr('r', currentInnerRadius - 1)
-      .attr('fill', 'white')
-      .attr('opacity', 0)
-      .transition()
-      .duration(800)
-      .delay(100)
-      .attr('opacity', 1);
+  // 1. Draw the concentric circles (grid lines)
+  const numRings = 4;
+  const ringStep = (currentOuterRadius - currentInnerRadius) / numRings;
 
-    // 2. Draw the radial lines (spoke lines)
-    allCategories.forEach((category, i) => {
-        const angle = categoryAngles[category][0]; 
-        
-        g.append('line')
-          .attr('class', 'grid-line')
-          .attr('x1', 0) 
-          .attr('y1', 0)
-          .attr('x2', 0)
-          .attr('y2', 0)
-          .attr('stroke', '#ccc')
-          .attr('stroke-width', 0.5)
-          .transition()
-          .duration(1000)
-          .delay(i * 100 + 300)
-          .attr('x1', Math.cos(angle) * currentInnerRadius) 
-          .attr('y1', Math.sin(angle) * currentInnerRadius)
-          .attr('x2', Math.cos(angle) * currentOuterRadius)
-          .attr('y2', Math.sin(angle) * currentOuterRadius);
-    });
-    // Final spoke line
-    const lastCategory = allCategories[allCategories.length - 1];
-    const lastAngle = categoryAngles[lastCategory][1];
+  g.selectAll('.grid-circle')
+    .data(d3.range(numRings + 1))
+    .enter()
+    .append('circle')
+    .attr('class', 'grid-circle')
+    .attr('r', 0)
+    .attr('fill', 'none')
+    .attr('stroke', '#ccc')
+    .attr('stroke-dasharray', '2,2')
+    .attr('opacity', 0)
+    .transition()
+    .duration(800)
+    .delay((_d, i) => i * 100)
+    .attr('r', (d) => currentInnerRadius + d * ringStep)
+    .attr('opacity', 1);
+
+  // White center background
+  g.append('circle')
+    .attr('class', 'center-fill')
+    .attr('r', currentInnerRadius - 1)
+    .attr('fill', 'white')
+    .attr('opacity', 0)
+    .transition()
+    .duration(800)
+    .delay(100)
+    .attr('opacity', 1);
+
+  // 2. Draw the radial lines (spokes)
+  allCategories.forEach((category, i) => {
+    const angle = categoryAngles[category][0];
     g.append('line')
-        .attr('class', 'grid-line')
-        .attr('x1', 0) 
-        .attr('y1', 0)
-        .attr('x2', 0)
-        .attr('y2', 0)
-        .attr('stroke', '#ccc')
-        .attr('stroke-width', 0.5)
-        .transition()
-        .duration(1000)
-        .delay(numCategories * 100 + 300)
-        .attr('x1', Math.cos(lastAngle) * currentInnerRadius) 
-        .attr('y1', Math.sin(lastAngle) * currentInnerRadius)
-        .attr('x2', Math.cos(lastAngle) * currentOuterRadius)
-        .attr('y2', Math.sin(lastAngle) * currentOuterRadius);
+      .attr('class', 'grid-line')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', 0)
+      .attr('y2', 0)
+      .attr('stroke', '#ccc')
+      .attr('stroke-width', 0.5)
+      .transition()
+      .duration(1000)
+      .delay(i * 100 + 300)
+      .attr('x1', Math.cos(angle) * currentInnerRadius)
+      .attr('y1', Math.sin(angle) * currentInnerRadius)
+      .attr('x2', Math.cos(angle) * currentOuterRadius)
+      .attr('y2', Math.sin(angle) * currentOuterRadius);
+  });
 
+  const lastCategory = allCategories[allCategories.length - 1];
+  const lastAngle = categoryAngles[lastCategory][1];
+  g.append('line')
+    .attr('class', 'grid-line')
+    .attr('x1', 0)
+    .attr('y1', 0)
+    .attr('x2', 0)
+    .attr('y2', 0)
+    .attr('stroke', '#ccc')
+    .attr('stroke-width', 0.5)
+    .transition()
+    .duration(1000)
+    .delay(numCategories * 100 + 300)
+    .attr('x1', Math.cos(lastAngle) * currentInnerRadius)
+    .attr('y1', Math.sin(lastAngle) * currentInnerRadius)
+    .attr('x2', Math.cos(lastAngle) * currentOuterRadius)
+    .attr('y2', Math.sin(lastAngle) * currentOuterRadius);
 
-    // 3. Draw the background segments
-    const arcGenerator = d3.arc<unknown>()
-      .innerRadius(currentInnerRadius)
-      .outerRadius(currentOuterRadius);
+  // 3. Draw the background range rings
+  const rangeColors = [
+    {
+      from: currentInnerRadius,
+      to: currentInnerRadius + (currentOuterRadius - currentInnerRadius) * 0.24,
+      color: '#E53935', // Low range
+      opacity: 0.1,
+    },
+    {
+      from: currentInnerRadius + (currentOuterRadius - currentInnerRadius) * 0.33,
+      to: currentInnerRadius + (currentOuterRadius - currentInnerRadius) * 0.66,
+      color: '#fff', // Normal
+      opacity: 0.12,
+    },
+    {
+      from: currentInnerRadius + (currentOuterRadius - currentInnerRadius) * 0.76,
+      to: currentOuterRadius,
+      color: '#FFB300', // High
+      opacity: 0.1,
+    },
+  ];
 
-    allCategories.forEach((category, i) => {
-      const angles = categoryAngles[category];
-      g.append('path')
-        .attr('d', arcGenerator({
-          startAngle: angles[0],
-          endAngle: angles[1]
-        }))
-        .attr('fill',  '#fff') 
-        .attr('opacity', 0)
-        .transition()
-        .duration(500)
-        .delay(1000 + i * 50)
-        .attr('opacity', 0.1);
-    });
+  rangeColors.forEach((range, i) => {
+    const arc = d3.arc()
+      .innerRadius(range.from)
+      .outerRadius(range.to)
+      .startAngle(0)
+      .endAngle(2 * Math.PI);
 
-    // 4. Draw the data points
-    const JITTER_OFFSET_PIXELS = 10 * SCALE_FACTOR; 
-    const MARKER_RADIUS = 5 * SCALE_FACTOR; 
-    const HIGHLIGHT_FILL_RADIUS = MARKER_RADIUS * 1.6;
-    const HIGHLIGHT_BORDER_RADIUS = HIGHLIGHT_FILL_RADIUS + (2 * SCALE_FACTOR);
-    const LATEST_BORDER_COLOR = '#333333';
-    const LATEST_BORDER_WIDTH = 1 * SCALE_FACTOR; 
-    
-    const chartGroup = g;
+    g.append('path')
+      .attr('d', arc as unknown as string)
+      .attr('fill', range.color)
+      .attr('opacity', 0)
+      .transition()
+      .duration(800)
+      .delay(600 + i * 200)
+      .attr('opacity', range.opacity);
+  });
+
+  // ---- your existing data points code continues below ----
+  // 4. Draw the data points
+  const JITTER_OFFSET_PIXELS = 10 * SCALE_FACTOR;
+  const MARKER_RADIUS = 5 * SCALE_FACTOR;
+  const HIGHLIGHT_FILL_RADIUS = MARKER_RADIUS * 1.6;
+  const HIGHLIGHT_BORDER_RADIUS = HIGHLIGHT_FILL_RADIUS + (2 * SCALE_FACTOR);
+  const LATEST_BORDER_COLOR = '#333333';
+  const LATEST_BORDER_WIDTH = 1 * SCALE_FACTOR;
+
+  const chartGroup = g;
+  // ... (no changes below this point)
+
 
     allCategories.forEach(category => {
         const categoryData = data.filter(d => d.category === category);
@@ -479,9 +497,33 @@ const RadialChart: React.FC<RadialChartProps> = ({
       />
 
       {/* Legend */}
-      <Stack direction="row" flexWrap="wrap" gap={2} sx={{ 
-        paddingLeft: 2, 
-        paddingRight: 2, 
+      <Stack sx={{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 1,
+        paddingLeft: 1, 
+        paddingRight: 1, 
+        justifyContent: 'center' 
+      }}>
+          <Stack flexDirection="row" alignItems="center" gap={1}>
+            <Box sx={{ width: 25, height: 5, background: "rgba(229, 57, 53, 0.18)" }} />
+            <Typography sx={{ fontSize: 12, fontWeight: 400, color: "#333333" }}>
+                Lower Range
+            </Typography>
+          </Stack>
+          <Stack flexDirection="row" alignItems="center" gap={1}>
+            <Box sx={{ width: 25, height: 5, background: "rgba(255, 179, 0, 0.15)" }} />
+            <Typography sx={{ fontSize: 12, fontWeight: 400, color: "#333333" }}>
+                Higher Range
+            </Typography>
+          </Stack>
+      </Stack>
+      <Stack sx={{ 
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 1,
+        paddingLeft: 1, 
+        paddingRight: 1, 
         justifyContent: 'center' 
       }}>
         <Stack flexDirection="row" alignItems="center" gap={1}>
