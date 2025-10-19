@@ -24,7 +24,7 @@ const DateFilter = ({dates, selectedDateId, onChange}: DateFilterProps) => {
     onChange(activeTabId);
   }, [activeTabId, onChange])
 
-  const handleTabChange = (event: SyntheticEvent, newValue: string) => {
+  const handleTabChange = (_event: SyntheticEvent, newValue: string) => {
     setActiveTabId(newValue);
   };
 
