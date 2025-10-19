@@ -9,7 +9,7 @@ type NestedModalProps = {
   children: JSX.Element;
 };
 
-const SubstanceHistoryModal = ({
+const ResponsiveModal = ({
   open,
   onClose: handleClose,
   children,
@@ -46,13 +46,14 @@ const SubstanceHistoryModal = ({
               position: "absolute",
               top: 8,
               right: 8,
-              color: "#666",
+              color: "#c2c2c2",
             }}
             aria-label="close"
           >
             <CloseIcon />
           </IconButton>
 
+          {/* The Content Will Go Here ...  */}
           {children}
         </Stack>
       </Fade>
@@ -60,4 +61,4 @@ const SubstanceHistoryModal = ({
   );
 };
 
-export default SubstanceHistoryModal;
+export default ResponsiveModal;

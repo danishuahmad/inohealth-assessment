@@ -1,4 +1,4 @@
-export const Substances = {
+export const SubstanceKeys = {
   Creatine: "creatine",
   Chloride: "chloride",
   FastingGlucose: "fasting_glucose",
@@ -9,7 +9,7 @@ export const Substances = {
 } as const;
 
 // Derive a union of the enum values
-export type SubstanceName = (typeof Substances)[keyof typeof Substances];
+export type SubstanceName = (typeof SubstanceKeys)[keyof typeof SubstanceKeys];
 
 // Create dynamic fields
 export type SubstanceValues = {
