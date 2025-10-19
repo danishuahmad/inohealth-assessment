@@ -153,7 +153,7 @@ const MultiSelect = ({ selectedIds, options, onChange}: MultiSelectProps) => {
                   height: '30px',
                   fontWeight: 600,
                 },
-              }}>Select All</Button>
+              }} disabled={!selectedIds.length}>Select All</Button>
       </Stack>
     </Stack>
   );

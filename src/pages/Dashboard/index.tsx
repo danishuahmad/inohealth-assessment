@@ -18,9 +18,16 @@ import glucose from "../../assets/icons/glucose.svg";
 import potassium from "../../assets/icons/potassium.svg";
 import sodium from "../../assets/icons/sodium.svg";
 import protein from "../../assets/icons/protein.svg";
+import SubstanceTrendChart, {
+  type LineChartProps,
+} from "../../components/substance-trend-chart/index.tsx";
+import SubstanceHistoryModal from "./SubstanceHistoryModal.tsx";
 
 const Dashboard = () => {
   const [data, setData] = useState<DataPoint[]>([]);
+  const [substanceHistoryToShow, setSubstanceHistoryToShow] = useState<
+    LineChartProps | undefined
+  >();
   const [substanceFilter, setSubstanceFilter] = useState<string[]>([]);
   const [dateFilter, setDateFilter] = useState<string | null>(null);
 
@@ -197,6 +204,35 @@ const Dashboard = () => {
     setSubstanceFilter(selectedIds);
   }, []);
 
+  const handleSubstanceHistorySelect = useCallback(
+    (substance: string) => {
+      const data: { date: string; value: number }[] = [];
+      health_data.map((record) => {
+        data.push({
+          date: record.date_testing,
+          value: record[substance as keyof typeof record] as number,
+        });
+      });
+      const unit = health_data[0][
+        `${substance}_unit` as keyof (typeof health_data)[0]
+      ] as string;
+      setSubstanceHistoryToShow({
+        label:
+          substance
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase()) +
+          ` (${unitFormatter(unit)})`,
+        data,
+        rangeMin:
+          REFERENCE_RANGES[substance as keyof typeof REFERENCE_RANGES].min,
+        rangeMax:
+          REFERENCE_RANGES[substance as keyof typeof REFERENCE_RANGES].max,
+        color: COLOR_PALETTE[substance as keyof typeof COLOR_PALETTE],
+      });
+    },
+    [COLOR_PALETTE, REFERENCE_RANGES, unitFormatter]
+  );
+
   return (
     <Box flexDirection="column" sx={{ minHeight: "80vh" }}>
       <Stack flexDirection="row" gap={2}>
@@ -222,7 +258,8 @@ const Dashboard = () => {
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.8)",
             backdropFilter: "blur(10px)",
-            boxShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)',
+            boxShadow:
+              "0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)",
             borderRadius: "15px",
             // FIX: Ensure the container has enough height to render the chart
             minHeight: "500px",
@@ -241,14 +278,35 @@ const Dashboard = () => {
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.8)",
             backdropFilter: "blur(10px)",
-            boxShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)',
+            boxShadow:
+              "0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)",
             borderRadius: "15px",
           }}
         >
-          <ReportDetail data={latestReportDetail} />
+          <ReportDetail
+            data={latestReportDetail}
+            onSelect={handleSubstanceHistorySelect}
+          />
         </Stack>
       </Stack>
-      <Stack flex={1} sx={{ backgroundColor: "white" }}></Stack>
+      <Stack flex={1} sx={{ backgroundColor: "white" }}>
+        <SubstanceHistoryModal
+          open={!!substanceHistoryToShow}
+          onClose={() => setSubstanceHistoryToShow(undefined)}
+        >
+            {
+                substanceHistoryToShow ? (
+                  <SubstanceTrendChart
+                    data={substanceHistoryToShow.data}
+                    rangeMin={substanceHistoryToShow.rangeMin}
+                    rangeMax={substanceHistoryToShow.rangeMax}
+                    color={substanceHistoryToShow.color}
+                    label={substanceHistoryToShow.label}
+                  />
+                ) : <></>
+            }
+        </SubstanceHistoryModal>
+      </Stack>
     </Box>
   );
 };

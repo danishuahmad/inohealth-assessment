@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
-import { Typography, Stack } from "@mui/material";
+import { useMemo } from "react";
+import { Typography, Stack, Button } from "@mui/material";
 
 // --- Icon Imports ---
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 // 1. Define the type for a single lab result item
 export type Report = {
@@ -19,18 +19,28 @@ export type Report = {
   icon: string; // URL or path to the icon image
 };
 
+type ResultRowProps = {
+  result: Report;
+  onSelect: (id: string) => void;
+};
+
 // Helper component for a single result row
-const ResultRow: React.FC<{ result: Report }> = ({ result }) => {
+const ResultRow = ({ result, onSelect }: ResultRowProps) => {
   // ... (other calculations remain the same)
 
-    const trendIcon = useMemo(() => {
-        const isIncreased = result.changePercentage > 0;
-        if( isIncreased ){
-            return <ArrowDropDownIcon sx={{ color: "#FF5C00", height: 20, width: 20 }} />
-        } return  <ArrowDropUpIcon sx={{ color: "#FF2C2C", height: 20, width: 20 }} />;
+  const handleSelect = () => {
+    onSelect(result.id);
+  }
 
-    }, [result]);
-
+  const trendIcon = useMemo(() => {
+    const isIncreased = result.changePercentage > 0;
+    if (isIncreased) {
+      return (
+        <ArrowDropDownIcon sx={{ color: "#FF5C00", height: 20, width: 20 }} />
+      );
+    }
+    return <ArrowDropUpIcon sx={{ color: "#FF2C2C", height: 20, width: 20 }} />;
+  }, [result]);
 
   return (
     <Stack
@@ -69,29 +79,67 @@ const ResultRow: React.FC<{ result: Report }> = ({ result }) => {
           </Typography>
         </Stack>
         <Stack>
-          <Stack flexDirection="row" alignItems="center" sx={{ color: "text.secondary"}}>
+          <Stack
+            flexDirection="row"
+            alignItems="center"
+            sx={{ color: "text.secondary" }}
+          >
             <Typography sx={{ fontWeight: 400, fontSize: 20 }}>
               {result.value}
             </Typography>
             {trendIcon}
-
           </Stack>
+          {/* ... (Right Section) */}
+          <Button
+            onClick={handleSelect}
+            sx={{
+              fontSize: "12px",
+              minHeight: "30px",
+              height: "30px",
+              minWidth: "auto",
+              borderRadius: "30px",
+              textTransform: "none",
+              color: "text.secondary",
+              transition: "all 200ms",
+              fontWeight: 400,
+              "&:hover": {
+                borderRadius: "30px",
+                height: "30px",
+                color: "text.primary",
+                fontWeight: 500,
+                background: "none",
+              },
+              "&.Mui-disabled": {
+                borderRadius: "30px",
+                color: "#d1d1d1",
+                height: "30px",
+                fontWeight: 600,
+              },
+              "&.Mui-selected": {
+                borderRadius: "30px",
+                color: "text.primary",
+                height: "30px",
+                fontWeight: 600,
+              },
+            }}
+          >
+            View History
+          </Button>
         </Stack>
       </Stack>
-
-      {/* ... (Right Section) */}
     </Stack>
   );
 };
 
 type ReportDetailProps = {
   data: Report[];
+  onSelect: (id: string) => void;
 };
 
 /**
  * Main Component
  */
-const ReportDetail = ({ data }: ReportDetailProps) => {
+const ReportDetail = ({ data , onSelect: handleSelect}: ReportDetailProps) => {
   return (
     <Stack
       gap={1}
@@ -103,27 +151,33 @@ const ReportDetail = ({ data }: ReportDetailProps) => {
         py: 2, // Added vertical padding for better spacing around the grid
       }}
     >
-        <Typography sx={{ fontWeight: 500, fontSize: 18 }}>
-            Latest Result Details
-        </Typography>
-        <Typography sx={{ fontWeight: 500, fontSize: 12, color: '#C4C4C4' }}>
-            {new Date(data[0]?.date).toLocaleDateString()}
-        </Typography>
-        <Typography sx={{  fontWeight: 400, fontSize: 14, color: 'text.secondary', mb: 1 }}>
-            This section provides detailed insights into your most recent lab results, highlighting key biomarkers and their comparison to last measurements.
-        </Typography>
+      <Typography sx={{ fontWeight: 500, fontSize: 18 }}>
+        Latest Result Details
+      </Typography>
+      <Typography sx={{ fontWeight: 500, fontSize: 12, color: "#C4C4C4" }}>
+        {new Date(data[0]?.date).toLocaleDateString()}
+      </Typography>
+      <Typography
+        sx={{ fontWeight: 400, fontSize: 14, color: "text.secondary", mb: 1 }}
+      >
+        This section provides detailed insights into your most recent lab
+        results, highlighting key biomarkers and their comparison to last
+        measurements.
+      </Typography>
       {data.map((result) => (
         <Stack
           key={`report-detail-${result.date}-${result.id}`}
           id="sub-container"
           // --- STYLES ADDED/UPDATED HERE ---
-          sx={{
-            // Card Appearance
-            // Subtle Box Shadow to make it "float"
-            // Optional: transition for a smooth look on hover or updates
-          }}
+          sx={
+            {
+              // Card Appearance
+              // Subtle Box Shadow to make it "float"
+              // Optional: transition for a smooth look on hover or updates
+            }
+          }
         >
-          <ResultRow result={result} />
+          <ResultRow result={result} onSelect={handleSelect} />
         </Stack>
       ))}
     </Stack>
