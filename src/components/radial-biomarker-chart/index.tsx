@@ -269,7 +269,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
 
 
     // 3. Draw the background segments
-    const arcGenerator = d3.arc<any>()
+    const arcGenerator = d3.arc<unknown>()
       .innerRadius(currentInnerRadius)
       .outerRadius(currentOuterRadius);
 
@@ -459,7 +459,13 @@ const RadialChart: React.FC<RadialChartProps> = ({
   }, [data, allCategories, categoryAngles, dimensions, currentInnerRadius, currentOuterRadius, SCALE_FACTOR, markerColorRange, showCentralText, centralNumber, centralLabel, width, height, numCategories, hideTooltip, showTooltip]); // The dependencies are now minimal and stable.
 
   return (
-    <Stack ref={containerRef} width="100%" height="100%" gap={5} sx={{ position: 'relative' }}>
+    <Stack ref={containerRef} width="100%" height="100%" gap={1} sx={{ position: 'relative' }}>
+      <Typography sx={{ fontWeight: 500, fontSize: 18 }}>
+          Your Personalized Biomarker Trends
+        </Typography>
+        <Typography sx={{  fontWeight: 400, fontSize: 14, color: 'text.secondary', mb: 1 }}>
+            Review the complete picture of your health metrics. Each point in the graph represents a key biomarker and you can easily compare your Last Recorded Value (specially bordered marker) with your other results to see the shift in your measurements.
+        </Typography>
       <Stack>
         <svg ref={svgRef} width={width} height={height}></svg>
       </Stack>
