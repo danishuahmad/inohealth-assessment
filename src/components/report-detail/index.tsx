@@ -93,13 +93,11 @@ type ReportDetailProps = {
  */
 const ReportDetail = ({ data }: ReportDetailProps) => {
   return (
-    // Outer Container for Dashboard (White card look)
     <Stack
       gap={1}
       sx={{
         flex: 1,
         maxWidth: "100%",
-        backgroundColor: "white",
         borderRadius: "16px",
         px: 2,
         py: 2, // Added vertical padding for better spacing around the grid
@@ -121,7 +119,6 @@ const ReportDetail = ({ data }: ReportDetailProps) => {
           // --- STYLES ADDED/UPDATED HERE ---
           sx={{
             // Card Appearance
-            backgroundColor: "white",
             // Subtle Box Shadow to make it "float"
             // Optional: transition for a smooth look on hover or updates
           }}

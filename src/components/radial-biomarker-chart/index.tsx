@@ -280,7 +280,7 @@ const RadialChart: React.FC<RadialChartProps> = ({
           startAngle: angles[0],
           endAngle: angles[1]
         }))
-        .attr('fill', data.find(d => d.category === category)?.color || '#ccc') 
+        .attr('fill',  '#fff') 
         .attr('opacity', 0)
         .transition()
         .duration(500)

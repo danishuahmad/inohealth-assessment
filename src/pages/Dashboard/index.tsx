@@ -7,15 +7,17 @@ import RadialBiomarkerChart, {
 import { Substances } from "./types";
 import DateFilter from "../../components/date-filter";
 import MultiSelectFilter from "../../components/multiselect-filter/index.tsx";
-import ReportDetail, {type Report} from "../../components/report-detail/index.tsx";
+import ReportDetail, {
+  type Report,
+} from "../../components/report-detail/index.tsx";
 
-import chloride from '../../assets/icons/chloride.svg';
-import calcium from '../../assets/icons/calcium.svg';
-import creatine from '../../assets/icons/creatine.svg';
-import glucose from '../../assets/icons/glucose.svg';
-import potassium from '../../assets/icons/potassium.svg';
-import sodium from '../../assets/icons/sodium.svg';
-import protein from '../../assets/icons/protein.svg';
+import chloride from "../../assets/icons/chloride.svg";
+import calcium from "../../assets/icons/calcium.svg";
+import creatine from "../../assets/icons/creatine.svg";
+import glucose from "../../assets/icons/glucose.svg";
+import potassium from "../../assets/icons/potassium.svg";
+import sodium from "../../assets/icons/sodium.svg";
+import protein from "../../assets/icons/protein.svg";
 
 const Dashboard = () => {
   const [data, setData] = useState<DataPoint[]>([]);
@@ -102,8 +104,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  const latestReportDetail : Report[] = useMemo(() => {
-
+  const latestReportDetail: Report[] = useMemo(() => {
     if (health_data.length === 0) return [] as Report[];
     const lastReport = health_data.reduce((latest, current) => {
       return new Date(current.date_testing) > new Date(latest.date_testing)
@@ -111,49 +112,50 @@ const Dashboard = () => {
         : latest;
     });
     const secondLastReport = health_data.reduce((latest, current) => {
-        if (current.date_testing === lastReport.date_testing) {
-            return latest;
-        }
-        return new Date(current.date_testing) > new Date(latest.date_testing)
-            ? current
-            : latest;
-        });
+      if (current.date_testing === lastReport.date_testing) {
+        return latest;
+      }
+      return new Date(current.date_testing) > new Date(latest.date_testing)
+        ? current
+        : latest;
+    });
 
     return SUBSTANCES.map((_substance) => ({
-        id: _substance as string,
-        title: `${_substance
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (c) => c.toUpperCase())} (${unitFormatter(lastReport[`${_substance}_unit`])})`,
-        titleColor: COLOR_PALETTE[_substance],
-        value: lastReport[_substance],
-        unit: unitFormatter(lastReport[`${_substance}_unit`]),
-        rangeMin: REFERENCE_RANGES[_substance].min,
-        rangeMax: REFERENCE_RANGES[_substance].max,
-        changePercentage: secondLastReport
-            ? ((lastReport[_substance] - secondLastReport[_substance]) / secondLastReport[_substance]) * 100
-            : 0,
-        date: lastReport.date_testing,
-        icon: ICONS[_substance],
-    }))
-
+      id: _substance as string,
+      title: `${_substance
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase())} (${unitFormatter(
+        lastReport[`${_substance}_unit`]
+      )})`,
+      titleColor: COLOR_PALETTE[_substance],
+      value: lastReport[_substance],
+      unit: unitFormatter(lastReport[`${_substance}_unit`]),
+      rangeMin: REFERENCE_RANGES[_substance].min,
+      rangeMax: REFERENCE_RANGES[_substance].max,
+      changePercentage: secondLastReport
+        ? ((lastReport[_substance] - secondLastReport[_substance]) /
+            secondLastReport[_substance]) *
+          100
+        : 0,
+      date: lastReport.date_testing,
+      icon: ICONS[_substance],
+    }));
   }, [COLOR_PALETTE, ICONS, REFERENCE_RANGES, SUBSTANCES, unitFormatter]);
 
-  console.log({ latestReportDetail })
+  console.log({ latestReportDetail });
 
   useEffect(() => {
     const chartData: DataPoint[] = [];
-    const substancesToInclude = (substanceFilter.length ? 
-    substanceFilter : 
-    SUBSTANCES) as typeof SUBSTANCES;
+    const substancesToInclude = (
+      substanceFilter.length ? substanceFilter : SUBSTANCES
+    ) as typeof SUBSTANCES;
 
     const filteredHealthData = dateFilter
       ? health_data.filter((record) => record.date_testing === dateFilter)
       : health_data;
 
-
     filteredHealthData.forEach((record) => {
-
-    substancesToInclude.forEach((substance) => {
+      substancesToInclude.forEach((substance) => {
         const value = record[substance];
         const range = REFERENCE_RANGES[substance];
 
@@ -182,7 +184,14 @@ const Dashboard = () => {
     });
 
     setData(chartData);
-  }, [COLOR_PALETTE, REFERENCE_RANGES, SUBSTANCES, unitFormatter, substanceFilter, dateFilter]);
+  }, [
+    COLOR_PALETTE,
+    REFERENCE_RANGES,
+    SUBSTANCES,
+    unitFormatter,
+    substanceFilter,
+    dateFilter,
+  ]);
 
   const handleSubstanceFilterChange = useCallback((selectedIds: string[]) => {
     setSubstanceFilter(selectedIds);
@@ -209,9 +218,12 @@ const Dashboard = () => {
       {/* Added minHeight to main Box */}
       <Stack flexDirection="row" gap={1}>
         <Stack
-          flex={3}
+          flex={5}
           sx={{
-            backgroundColor: "white",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backdropFilter: "blur(10px)",
+            boxShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)',
+            borderRadius: "15px",
             // FIX: Ensure the container has enough height to render the chart
             minHeight: "500px",
           }}
@@ -224,12 +236,19 @@ const Dashboard = () => {
             centralLabel="Optimal Biomarkers" // Set the desired label here
           />
         </Stack>
-        <Stack flex={2} sx={{ backgroundColor: "white" }}>
-            <ReportDetail data={latestReportDetail} />
+        <Stack
+          flex={3}
+          sx={{
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backdropFilter: "blur(10px)",
+            boxShadow: '0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)',
+            borderRadius: "15px",
+          }}
+        >
+          <ReportDetail data={latestReportDetail} />
         </Stack>
       </Stack>
-      <Stack flex={1} sx={{ backgroundColor: "white" }}>
-      </Stack>
+      <Stack flex={1} sx={{ backgroundColor: "white" }}></Stack>
     </Box>
   );
 };
