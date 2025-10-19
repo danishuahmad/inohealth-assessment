@@ -36,6 +36,10 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   const [data, setData] = useState<DataPoint[]>([]);
 
+  const substancesToInclude = useMemo(() =>
+    substanceFilter.length ? substanceFilter : substances as typeof substances, 
+  [substanceFilter, substances]);
+
     const filteredReports = useMemo(() => {
         return dateFilter
         ? reports_data.filter((record) => record.date_testing === dateFilter)
@@ -46,7 +50,7 @@ const HeroSection = ({
         if( dateFilter ){
 
             let totalOptimalBiomarkers = 0;
-            substances.forEach((substance) => {
+            substancesToInclude.forEach((substance) => {
                 filteredReports.forEach((record) => {
                     const value = Number(record[substance as string as keyof ApiResponse]);
                     const range = referenceForRanges[substance];
@@ -69,7 +73,7 @@ const HeroSection = ({
                 centralLabel: `Result${reports_data.length !== 1 ? 's' : ''} Summarized`,
             };
         }
-    }, [dateFilter, substances, filteredReports, referenceForRanges, reports_data.length]);
+    }, [dateFilter, substancesToInclude, filteredReports, referenceForRanges, reports_data.length]);
 
   useEffect(() => {
     const chartData: DataPoint[] = [];
