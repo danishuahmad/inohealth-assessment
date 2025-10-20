@@ -47,7 +47,18 @@ const Filters = ({
   }, [reports_data]);
 
   return (
-    <Stack sx={{ ...customStyles }}>
+    <Stack 
+    sx={{
+      ...customStyles,
+      flexWrap: "wrap",            // ✅ allows children to wrap on small screens
+      overflowX: "hidden",         // ✅ prevents subtle horizontal scroll
+      width: "100%",               // ✅ ensures no overflow beyond parent
+      maxWidth: "100%",            // ✅ keeps children inside boundary
+      "& *": {
+        minWidth: 0,               // ✅ prevents MUI inputs/selects from enforcing min width
+      },
+    }}
+    >
       <Stack flex={1}>
         <DateFilter
           selectedDateId={dateFilter}

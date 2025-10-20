@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useMemo, useState, useCallback } from 'react'; // ADDED useCallback
 import * as d3 from 'd3';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 // Define the new data structure
 export type DataPoint = {
@@ -142,41 +142,49 @@ const RadialChart: React.FC<RadialChartProps> = ({
   }, [allCategories, numCategories]);
 
 
-  // --- Dynamic Size Calculation ---
-  useEffect(() => {
-    const measure = () => {
-      if (containerRef.current) {
-        const svgContainer = containerRef.current.querySelector('svg')?.parentElement;
-        if (svgContainer) {
-            const { width, height } = svgContainer.getBoundingClientRect();
-            setDimensions({ width: width || 400, height: height || 400 }); 
-        }
+// --- Dynamic Size Calculation ---
+useEffect(() => {
+  const measure = () => {
+    if (containerRef.current) {
+      const svgContainer = containerRef.current.querySelector("svg")?.parentElement;
+      if (svgContainer) {
+        const { width, height } = svgContainer.getBoundingClientRect();
+        setDimensions({ width: width || 400, height: height || 400 });
       }
-    };
+    }
+  };
 
-    const timeout = setTimeout(measure, 50); 
-    window.addEventListener('resize', measure);
+  const timeout = setTimeout(measure, 50);
+  window.addEventListener("resize", measure);
 
-    return () => {
-        clearTimeout(timeout);
-        window.removeEventListener('resize', measure);
-    };
-  }, []);
+  return () => {
+    clearTimeout(timeout);
+    window.removeEventListener("resize", measure);
+  };
+}, []);
 
-  const { width, height } = dimensions; 
-  
-  // Calculate scaled dimensions (only depends on static props/dynamic dimensions)
-  const [currentInnerRadius, currentOuterRadius, SCALE_FACTOR] = useMemo(() => {
-    const maxDimension = Math.min(width, height);
-    const chartRadius = (maxDimension / 2) * 0.9; 
-    
-    const REFERENCE_OUTER_RADIUS = 200;
-    const currentOuterR = chartRadius * (outerRadius / REFERENCE_OUTER_RADIUS); 
-    const currentInnerR = currentOuterR * (innerRadius / outerRadius);
-    const scaleFactor = currentOuterR / REFERENCE_OUTER_RADIUS;
-    
-    return [currentInnerR, currentOuterR, scaleFactor];
-  }, [width, height, innerRadius, outerRadius]);
+const { width, height } = dimensions;
+
+// --- Detect Screen Size ---
+const theme = useTheme();
+const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
+// --- Adjust Scaling for Smaller Screens ---
+const deviceScale = isMobile ? 0.75 : isTablet ? 0.9 : 1;
+
+// --- Calculate Scaled Dimensions ---
+const [currentInnerRadius, currentOuterRadius, SCALE_FACTOR] = useMemo(() => {
+  const maxDimension = Math.min(width, height);
+  const chartRadius = (maxDimension / 2) * 0.9 * deviceScale;
+
+  const REFERENCE_OUTER_RADIUS = 200;
+  const currentOuterR = chartRadius * (outerRadius / REFERENCE_OUTER_RADIUS);
+  const currentInnerR = currentOuterR * (innerRadius / outerRadius);
+  const scaleFactor = currentOuterR / REFERENCE_OUTER_RADIUS;
+
+  return [currentInnerR, currentOuterR, scaleFactor];
+}, [width, height, innerRadius, outerRadius, deviceScale]);
 
 
   // --- D3 Drawing Logic (Dependencies now stable) ---

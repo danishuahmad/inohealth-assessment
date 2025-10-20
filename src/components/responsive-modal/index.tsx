@@ -1,42 +1,41 @@
 import Modal from "@mui/material/Modal";
 import { Stack, IconButton, Fade } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import type { JSX } from "react";
+import type { ReactNode } from "react";
 
-type NestedModalProps = {
+type ResponsiveModalProps = {
   open: boolean;
   onClose: () => void;
-  children: JSX.Element;
+  children: ReactNode;
 };
 
 const ResponsiveModal = ({
   open,
   onClose: handleClose,
   children,
-}: NestedModalProps) => {
+}: ResponsiveModalProps) => {
   return (
     <Modal
       open={open}
       onClose={handleClose}
-      closeAfterTransition // ensures content unmounts after animation
+      closeAfterTransition
       slotProps={{
-        backdrop: {
-          timeout: 400, // controls backdrop fade duration
-        },
+        backdrop: { timeout: 400 },
       }}
     >
       <Fade in={open} timeout={400}>
         <Stack
           sx={{
             background: "#fff",
-            padding: 4,
             borderRadius: 2,
-            maxWidth: "50vw",
-            minHeight: "50vh",
-            margin: "auto",
-            marginTop: "5vh",
-            position: "relative",
             boxShadow: 6,
+            margin: "auto",
+            position: "relative",
+            padding: { xs: 2, sm: 3, md: 4 },
+            width: { xs: "90vw", sm: "80vw", md: "60vw", lg: "50vw" },
+            maxHeight: { xs: "85vh", sm: "80vh", md: "75vh" },
+            overflowY: "auto", // allows content to scroll
+            marginTop: { xs: "8vh", sm: "6vh", md: "5vh" },
           }}
         >
           {/* Close Button */}
@@ -53,7 +52,6 @@ const ResponsiveModal = ({
             <CloseIcon />
           </IconButton>
 
-          {/* The Content Will Go Here ...  */}
           {children}
         </Stack>
       </Fade>
