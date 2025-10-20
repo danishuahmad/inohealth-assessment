@@ -18,7 +18,7 @@ type FiltersProps = {
 };
 
 const Filters = ({
-    customStyles,
+  customStyles,
   reports_data,
   substances,
   substanceFilter,
@@ -50,16 +50,16 @@ const Filters = ({
     <Stack 
     sx={{
       ...customStyles,
-      flexWrap: "wrap",            // ✅ allows children to wrap on small screens
-      overflowX: "hidden",         // ✅ prevents subtle horizontal scroll
-      width: "100%",               // ✅ ensures no overflow beyond parent
-      maxWidth: "100%",            // ✅ keeps children inside boundary
+      flexWrap: "wrap",            
+      overflowX: "hidden",         
+      width: "100%",               
+      maxWidth: "100%",            
       "& *": {
-        minWidth: 0,               // ✅ prevents MUI inputs/selects from enforcing min width
+        minWidth: 0,               
       },
     }}
     >
-      <Stack flex={1}>
+      <Stack sx={{ minWidth: 300, maxWidth: 500 }}>
         <DateFilter
           selectedDateId={dateFilter}
           onChange={handleDateFilterChange}
