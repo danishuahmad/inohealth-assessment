@@ -15,9 +15,10 @@ import {
   REFERENCE_FOR_RANGES,
   unitFormatter,
 } from "./utils";
+import ErrorSection from "../../components/error-section";
 
 const Dashboard = () => {
-  const { data: apiData, isLoading } = useDataContext();
+  const { data: apiData, isLoading, error } = useDataContext();
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -118,6 +119,10 @@ const Dashboard = () => {
     },
     [apiData]
   );
+
+  if( error ){
+    return <ErrorSection />
+  }
 
   return (
     <Stack sx={{ maxHeight: "100%", maxWidth: "100%", pb: 2 }}>
