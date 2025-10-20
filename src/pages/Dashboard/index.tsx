@@ -1,9 +1,11 @@
 import { Stack, useMediaQuery, useTheme } from "@mui/material";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 
 import health_data from "../../assets/data.json";
 import { SubstanceKeys } from "./types";
-import SubstanceTrendChart, { type LineChartProps } from "../../components/substance-trend-chart";
+import SubstanceTrendChart, {
+  type LineChartProps,
+} from "../../components/substance-trend-chart";
 import ResponsiveModal from "../../components/responsive-modal";
 import HeroSection from "./hero-section";
 import SecondarySection from "./secondary-section";
@@ -16,18 +18,57 @@ import {
 } from "./utils";
 
 const Dashboard = () => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const SUBSTANCES = useMemo(() => Object.values(SubstanceKeys), []);
+
+  // --- 🧩 Hydration Guard (to avoid initial flicker)
+  const [isHydrated, setIsHydrated] = useState(false);
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const [substanceFilter, setSubstanceFilter] = useState<string[]>([]);
+  const [dateFilter, setDateFilter] = useState<string | null>(null);
   const [substanceHistoryToShow, setSubstanceHistoryToShow] = useState<
     LineChartProps | undefined
   >();
-  const [substanceFilter, setSubstanceFilter] = useState<string[]>([]);
-  const [dateFilter, setDateFilter] = useState<string | null>(null);
 
-  const SUBSTANCES = useMemo(() => Object.values(SubstanceKeys), []);
+  /**
+   * Manage URL parameters to reflect filter state
+   */
+  useEffect(() => {
+    /** Retrieves URL parameters to feed the state */
+    if(!isHydrated) return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialSubstances = urlParams.get("substances")
+      ? urlParams.get("substances")!.split(",")
+      : [];
+    const initialDate = urlParams.get("date") || null;
+    setSubstanceFilter(initialSubstances);
+    setDateFilter(initialDate);
+  }, [isHydrated]);
 
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md")); 
-  // "md" ~ 900px breakpoint. You can change to "sm" if needed.
+  useEffect(() => {
+    if (!isHydrated) return;
+  
+    const params = new URLSearchParams();
+    if (substanceFilter.length > 0) params.set("substances", substanceFilter.join(","));
+    
+    if (dateFilter) params.set("date", dateFilter);
+  
+    const queryString = params.toString();
+    const newUrl = queryString
+      ? `${window.location.pathname}?${queryString}`
+      : window.location.pathname;
+  
+    // Only update if URL actually needs to change
+    if (window.location.search !== (queryString ? `?${queryString}` : "")) {
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [substanceFilter, dateFilter, isHydrated]);
 
+  // --- When user selects a substance to view its trend
   const handleSubstanceHistorySelect = useCallback((substance: string) => {
     const data: { date: string; value: number }[] = [];
     health_data.map((record) => {
@@ -58,7 +99,10 @@ const Dashboard = () => {
     <Stack sx={{ maxHeight: "100%", maxWidth: "100%", pb: 2 }}>
       {/* Filter Section */}
       <Filters
-        customStyles={{ flexDirection: isSmallScreen ? "column" : "row", gap: 1 }}
+        customStyles={{
+          flexDirection: isSmallScreen ? "column" : "row",
+          gap: 1,
+        }}
         reports_data={health_data}
         substances={SUBSTANCES}
         substanceFilter={substanceFilter}
