@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { DataContext, type DataContextType } from "./context";
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [data, setData] = useState<DataContextType["data"]>(null);
   const [isLoading, setLoading] = useState<DataContextType["isLoading"]>(true);
   const [error, setError] = useState<DataContextType["error"]>(null);
+
+  const didFetch = useRef(false);
 
   const fetchData = async () => {
     try {
@@ -21,11 +25,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    fetchData();
+    if (!didFetch.current) {
+      didFetch.current = true;
+      fetchData();
+    }
   }, []);
 
   return (
-    <DataContext.Provider value={{ data, isLoading, error, refetch: fetchData }}>
+    <DataContext.Provider
+      value={{ data, isLoading, error, refetch: fetchData }}
+    >
       {children}
     </DataContext.Provider>
   );

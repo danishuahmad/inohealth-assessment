@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { type SxProps } from "@mui/material";
 
-import RadialBiomarkerChart, {
+import {
+  RadialBiomarkerChart,
   type DataPoint,
 } from "../../components/radial-biomarker-chart";
 import type { ApiResponse } from "./types";

@@ -1,8 +1,11 @@
-import { Stack, type SxProps } from "@mui/material";
+import type { ReactNode } from "react";
+import { Stack, type SxProps, type Theme } from "@mui/material";
+
+import { defaultSectionSx } from './styles'; // Import default styles
 
 type SectionContainerProps = {
-  children: React.ReactNode;
-  customStyles?: SxProps;
+  children: ReactNode;
+  customStyles?: SxProps<Theme>; // Specify Theme type for better SxProps typing
 };
 
 const SectionContainer = ({
@@ -12,12 +15,8 @@ const SectionContainer = ({
   return (
     <Stack
       sx={{
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        backdropFilter: "blur(10px)",
-        boxShadow:
-          "0 0 20px rgba(255, 255, 255, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)",
-        borderRadius: "15px",
-        ...customStyles,
+        ...defaultSectionSx, // Apply default glassmorphic styles
+        ...(customStyles as object), // Apply and merge custom styles (needs type assertion for spread)
       }}
     >
       {children}

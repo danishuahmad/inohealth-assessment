@@ -2,8 +2,8 @@ import { Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { useDataContext } from "../../context/data-context/use-data";
 import { SubstanceKeys } from "./types";
-import SubstanceTrendChart, {
-  type LineChartProps,
+import {
+  SubstanceTrendChart, type LineChartProps
 } from "../../components/substance-trend-chart";
 import ResponsiveModal from "../../components/responsive-modal";
 import HeroSection from "./hero-section";

@@ -1,5 +1,9 @@
+// MainContainer.tsx
+
 import { Stack } from "@mui/material";
 import { AnimatePresence } from "framer-motion";
+
+import { mainContainerSx } from './styles'; // Import styles
 
 type MainContainerProps = {
   appBar: React.ReactNode;
@@ -10,18 +14,17 @@ type MainContainerProps = {
 const MainContainer = ({ appBar, children, footer }: MainContainerProps) => {
   return (
     <Stack
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#f0f8ff", // Fallback color
-        backgroundImage: "linear-gradient(to bottom right, #f0f8ff, #e6e6fa)",
-        px: { xs: 0, sm: 4, md: 8, lg: 20 }, // responsive horizontal padding
-        overflowX: "hidden", // ensures no horizontal scroll
-      }}
+      sx={mainContainerSx} // Use imported style
     >
-      <AnimatePresence mode="wait">
-        <Stack>{appBar}</Stack>
-        <Stack>{children}</Stack>
-        <Stack>{footer}</Stack>
+      <AnimatePresence mode="sync">
+        {/*
+          Note: Since AnimatePresence is used directly on the content,
+          each content block requires a unique key for Framer Motion to track it
+          and apply animations when its presence changes.
+        */}
+        <Stack key={`main-container-child-appbar`}>{appBar}</Stack>
+        <Stack key={`main-container-child-content`}>{children}</Stack>
+        <Stack key={`main-container-child-footer`}>{footer}</Stack>
       </AnimatePresence>
     </Stack>
   );
