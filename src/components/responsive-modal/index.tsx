@@ -46,6 +46,7 @@ const ResponsiveModal = ({
               top: 8,
               right: 8,
               color: "#c2c2c2",
+              zIndex: 1,
             }}
             aria-label="close"
           >
