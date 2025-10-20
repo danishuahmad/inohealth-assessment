@@ -7,6 +7,7 @@ import RadialBiomarkerChart, {
 import type { ApiResponse } from "./types";
 import SectionContainer from "../../components/section-container";
 import { LoadingSkeleton } from "./loading-skeleton";
+import AnimationWrapper from "../../components/animation-wrapper";
 
 type HeroSectionProps = {
   customStyles?: SxProps;
@@ -147,12 +148,14 @@ const HeroSection = ({
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
-        <RadialBiomarkerChart
-          data={data}
-          showCentralText
-          centralNumber={centerLabels.centralNumber} // Set the desired number here
-          centralLabel={centerLabels.centralLabel} // Set the desired label here
-        />
+        <AnimationWrapper>
+          <RadialBiomarkerChart
+            data={data}
+            showCentralText
+            centralNumber={centerLabels.centralNumber} // Set the desired number here
+            centralLabel={centerLabels.centralLabel} // Set the desired label here
+          />
+        </AnimationWrapper>
       )}
     </SectionContainer>
   );

@@ -94,7 +94,7 @@ const Dashboard = () => {
           .max,
       color: COLOR_PALETTE[substance as keyof typeof COLOR_PALETTE],
     });
-  }, []);
+  }, [apiData]);
 
   return (
     <Stack sx={{ maxHeight: "100%", maxWidth: "100%", pb: 2 }}>

@@ -141,14 +141,7 @@ type ReportDetailProps = {
  */
 const DetailTable = ({ data, onSelect: handleSelect }: ReportDetailProps) => {
   return (
-    <Stack
-      gap={1}
-      sx={{
-        flex: 1,
-        maxWidth: "100%",
-        borderRadius: "16px",
-      }}
-    >
+    <Stack gap={1}>
       <Typography sx={{ fontWeight: 500, fontSize: 18 }}>
         Latest Result Details
       </Typography>

@@ -3,6 +3,7 @@ import { Stack, type SxProps } from "@mui/material";
 import DateFilter from "../../components/date-filter";
 import MultiSelectFilter from "../../components/multiselect-filter/index.tsx";
 import type { ApiResponse } from "./types.ts";
+import AnimationWrapper from "../../components/animation-wrapper/index.tsx";
 
 type FiltersProps = {
   customStyles?: SxProps;
@@ -45,49 +46,51 @@ const Filters = ({
     return Array.from(datesSet).sort();
   }, [reports_data]);
 
-  if(  isLoading){
-    return <Stack minHeight={68} />
+  if (isLoading) {
+    return <Stack minHeight={68} />;
   }
 
   return (
-    <Stack
-      direction={{ xs: "column", sm: "row" }}
-      spacing={2}
-      sx={{
-        ...customStyles,
-        flexWrap: "wrap",
-        width: "100%",
-        maxWidth: "100%",
-        overflowX: "hidden",
-      }}
-    >
+    <AnimationWrapper>
       <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={2}
         sx={{
-          width: { xs: "100%", sm: "auto" },
-          minWidth: { xs: "100vw", sm: 300 },
-          maxWidth: { xs: "100vw", sm: 500 },
+          ...customStyles,
+          flexWrap: "wrap",
+          width: "100%",
+          maxWidth: "100%",
+          overflowX: "hidden",
         }}
       >
-        <DateFilter
-          selectedDateId={dateFilter}
-          onChange={onDateFilterChange}
-          dates={availableReportDates}
-        />
-      </Stack>
+        <Stack
+          sx={{
+            width: { xs: "100%", sm: "auto" },
+            minWidth: { xs: "100vw", sm: 300 },
+            maxWidth: { xs: "100vw", sm: 500 },
+          }}
+        >
+          <DateFilter
+            selectedDateId={dateFilter}
+            onChange={onDateFilterChange}
+            dates={availableReportDates}
+          />
+        </Stack>
 
-      <Stack
-        sx={{
-          flex: 1,
-          width: { xs: "100%", sm: "auto" },
-        }}
-      >
-        <MultiSelectFilter
-          selectedIds={substanceFilter}
-          options={substanceFilterOptions}
-          onChange={onSubstanceFilterChange}
-        />
+        <Stack
+          sx={{
+            flex: 1,
+            width: { xs: "100%", sm: "auto" },
+          }}
+        >
+          <MultiSelectFilter
+            selectedIds={substanceFilter}
+            options={substanceFilterOptions}
+            onChange={onSubstanceFilterChange}
+          />
+        </Stack>
       </Stack>
-    </Stack>
+    </AnimationWrapper>
   );
 };
 

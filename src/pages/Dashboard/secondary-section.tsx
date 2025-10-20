@@ -5,6 +5,7 @@ import ReporDetail, { type Report } from "../../components/report-detail";
 import type { ApiResponse } from "./types";
 import SectionContainer from "../../components/section-container";
 import { LoadingSkeleton } from "./loading-skeleton";
+import AnimationWrapper from "../../components/animation-wrapper";
 
 type SecondarySectionProps = {
   customStyles?: SxProps;
@@ -90,10 +91,12 @@ const SecondarySection = ({
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
-        <ReporDetail
-          data={latestReportDetail}
-          onSelect={handleSubstanceHistoryRequested}
-        />
+        <AnimationWrapper>
+          <ReporDetail
+            data={latestReportDetail}
+            onSelect={handleSubstanceHistoryRequested}
+          />
+        </AnimationWrapper>
       )}
     </SectionContainer>
   );

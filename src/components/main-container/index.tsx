@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material";
+import { AnimatePresence } from "framer-motion";
 
 type MainContainerProps = {
   appBar: React.ReactNode;
@@ -17,9 +18,11 @@ const MainContainer = ({ appBar, children, footer }: MainContainerProps) => {
         overflowX: "hidden", // ensures no horizontal scroll
       }}
     >
-      <Stack>{appBar}</Stack>
-      <Stack>{children}</Stack>
-      <Stack>{footer}</Stack>
+      <AnimatePresence mode="wait">
+        <Stack>{appBar}</Stack>
+        <Stack>{children}</Stack>
+        <Stack>{footer}</Stack>
+      </AnimatePresence>
     </Stack>
   );
 };
