@@ -12,6 +12,7 @@ type FiltersProps = {
   onSubstanceFilterChange: (substanceIds: string[]) => void;
   dateFilter: string | null;
   onDateFilterChange: (dateId: string | null) => void;
+  isLoading?: boolean;
 };
 
 const Filters = ({
@@ -22,6 +23,7 @@ const Filters = ({
   onSubstanceFilterChange,
   dateFilter,
   onDateFilterChange,
+  isLoading = false,
 }: FiltersProps) => {
   const substanceFilterOptions = useMemo(() => {
     return substances.map((substance) => ({
@@ -42,6 +44,10 @@ const Filters = ({
     });
     return Array.from(datesSet).sort();
   }, [reports_data]);
+
+  if(  isLoading){
+    return <Stack minHeight={68} />
+  }
 
   return (
     <Stack

@@ -65,7 +65,7 @@ const Tooltip: React.FC<TooltipState> = ({ visible, x, y, data: _data, statusCol
 };
 
 // --- Radial Chart Component ---
-const RadialChart: React.FC<RadialChartProps> = ({
+const RadialBiomarkerChart: React.FC<RadialChartProps> = ({
   data,
   innerRadius = 80,
   outerRadius = 160,
@@ -566,4 +566,4 @@ useEffect(() => {
   );
 };
 
-export default RadialChart;
+export default RadialBiomarkerChart;

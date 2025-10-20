@@ -1,7 +1,6 @@
 import { Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useCallback, useMemo, useState, useEffect } from "react";
-
-import health_data from "../../assets/data.json";
+import { useDataContext } from "../../context/data-context/use-data";
 import { SubstanceKeys } from "./types";
 import SubstanceTrendChart, {
   type LineChartProps,
@@ -18,11 +17,13 @@ import {
 } from "./utils";
 
 const Dashboard = () => {
+  const { data: apiData, isLoading } = useDataContext();
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const SUBSTANCES = useMemo(() => Object.values(SubstanceKeys), []);
 
-  // --- 🧩 Hydration Guard (to avoid initial flicker)
+
   const [isHydrated, setIsHydrated] = useState(false);
   useEffect(() => {
     setIsHydrated(true);
@@ -71,14 +72,14 @@ const Dashboard = () => {
   // --- When user selects a substance to view its trend
   const handleSubstanceHistorySelect = useCallback((substance: string) => {
     const data: { date: string; value: number }[] = [];
-    health_data.map((record) => {
+    apiData?.map((record) => {
       data.push({
         date: record.date_testing,
         value: record[substance as keyof typeof record] as number,
       });
     });
-    const unit = health_data[0][
-      `${substance}_unit` as keyof (typeof health_data)[0]
+    const unit = apiData?.[0][
+      `${substance}_unit` as keyof (typeof apiData)[0]
     ] as string;
     setSubstanceHistoryToShow({
       label:
@@ -103,12 +104,13 @@ const Dashboard = () => {
           flexDirection: isSmallScreen ? "column" : "row",
           gap: 1,
         }}
-        reports_data={health_data}
+        reports_data={apiData || []}
         substances={SUBSTANCES}
         substanceFilter={substanceFilter}
         onSubstanceFilterChange={setSubstanceFilter}
         dateFilter={dateFilter}
         onDateFilterChange={setDateFilter}
+        isLoading={isLoading}
       />
 
       {/* Main Section */}
@@ -120,20 +122,21 @@ const Dashboard = () => {
         <Stack flex={isSmallScreen ? "none" : 5}>
           <HeroSection
             customStyles={{ flex: 1, p: 2 }}
-            reports_data={health_data}
+            reports_data={apiData || []}
             colorPalette={COLOR_PALETTE}
             referenceForRanges={REFERENCE_FOR_RANGES}
             substances={SUBSTANCES}
             unitFormatter={unitFormatter}
             substanceFilter={substanceFilter}
             dateFilter={dateFilter}
+            isLoading={isLoading}
           />
         </Stack>
 
         <Stack flex={isSmallScreen ? "none" : 3}>
           <SecondarySection
-            customStyles={{ flex: 1 }}
-            reports_data={health_data}
+            customStyles={{ flex: 1, p: 2 }}
+            reports_data={apiData || []}
             colorPalette={COLOR_PALETTE}
             referenceForRanges={REFERENCE_FOR_RANGES}
             substances={SUBSTANCES}
@@ -142,6 +145,7 @@ const Dashboard = () => {
             substanceFilter={substanceFilter}
             dateFilter={dateFilter}
             onSelect={handleSubstanceHistorySelect}
+            isLoading={isLoading}
           />
         </Stack>
       </Stack>

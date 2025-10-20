@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { type SxProps } from "@mui/material";
 
-import ReportDetail, { type Report } from "../../components/report-detail";
+import ReporDetail, { type Report } from "../../components/report-detail";
 import type { ApiResponse } from "./types";
 import SectionContainer from "../../components/section-container";
+import { LoadingSkeleton } from "./loading-skeleton";
 
 type SecondarySectionProps = {
   customStyles?: SxProps;
@@ -22,6 +23,7 @@ type SecondarySectionProps = {
   dateFilter: string | null;
   unitFormatter: (unit: string) => string;
   onSelect: (substance: string) => void;
+  isLoading?: boolean;
 };
 
 const SecondarySection = ({
@@ -33,6 +35,7 @@ const SecondarySection = ({
   substances,
   unitFormatter,
   onSelect: handleSubstanceHistoryRequested,
+  isLoading = false,
 }: SecondarySectionProps) => {
   const latestReportDetail: Report[] = useMemo(() => {
     if (reports_data.length === 0) return [] as Report[];
@@ -84,10 +87,14 @@ const SecondarySection = ({
 
   return (
     <SectionContainer customStyles={customStyles}>
-      <ReportDetail
-        data={latestReportDetail}
-        onSelect={handleSubstanceHistoryRequested}
-      />
+      {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        <ReporDetail
+          data={latestReportDetail}
+          onSelect={handleSubstanceHistoryRequested}
+        />
+      )}
     </SectionContainer>
   );
 };

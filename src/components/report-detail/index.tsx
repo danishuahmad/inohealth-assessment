@@ -139,7 +139,7 @@ type ReportDetailProps = {
 /**
  * Main Component
  */
-const ReportDetail = ({ data, onSelect: handleSelect }: ReportDetailProps) => {
+const DetailTable = ({ data, onSelect: handleSelect }: ReportDetailProps) => {
   return (
     <Stack
       gap={1}
@@ -147,8 +147,6 @@ const ReportDetail = ({ data, onSelect: handleSelect }: ReportDetailProps) => {
         flex: 1,
         maxWidth: "100%",
         borderRadius: "16px",
-        px: 2,
-        py: 2, // Added vertical padding for better spacing around the grid
       }}
     >
       <Typography sx={{ fontWeight: 500, fontSize: 18 }}>
@@ -166,4 +164,4 @@ const ReportDetail = ({ data, onSelect: handleSelect }: ReportDetailProps) => {
   );
 };
 
-export default ReportDetail;
+export default DetailTable;

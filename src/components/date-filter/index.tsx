@@ -11,6 +11,7 @@ type DateFilterProps = {
   dates: TabData[];
   selectedDateId: string | null;
   onChange: (dateId: string | null) => void;
+  isLoading?: boolean;
 };
 
 // The main component: DateFilter

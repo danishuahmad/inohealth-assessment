@@ -11,7 +11,7 @@ export type ReportsApiResponseObject = {
 
 export interface DataContextType {
   data: ReportsApiResponseObject[] | null;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
   refetch: () => void;
 }

@@ -5,7 +5,7 @@ import theme from "./theme";
 import Dashboard from "./pages/Dashboard";
 import ResponsiveAppBar from "./components/app-bar";
 import MainContainer from "./components/main-container";
-import { DataProvider } from "./context//data-context";
+import { DataProvider } from "./context/data-context";
 
 // 👇 Import from your single entry point
 

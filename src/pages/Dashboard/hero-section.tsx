@@ -6,6 +6,7 @@ import RadialBiomarkerChart, {
 } from "../../components/radial-biomarker-chart";
 import type { ApiResponse } from "./types";
 import SectionContainer from "../../components/section-container";
+import { LoadingSkeleton } from "./loading-skeleton";
 
 type HeroSectionProps = {
   customStyles?: SxProps;
@@ -22,6 +23,7 @@ type HeroSectionProps = {
   substanceFilter: string[];
   dateFilter: string | null;
   unitFormatter: (unit: string) => string;
+  isLoading?: boolean;
 };
 
 const HeroSection = ({
@@ -33,47 +35,63 @@ const HeroSection = ({
   substanceFilter,
   dateFilter,
   unitFormatter,
+  isLoading = false,
 }: HeroSectionProps) => {
   const [data, setData] = useState<DataPoint[]>([]);
 
-  const substancesToInclude = useMemo(() =>
-    substanceFilter.length ? substanceFilter : substances as typeof substances, 
-  [substanceFilter, substances]);
+  const substancesToInclude = useMemo(
+    () =>
+      substanceFilter.length
+        ? substanceFilter
+        : (substances as typeof substances),
+    [substanceFilter, substances]
+  );
 
-    const filteredReports = useMemo(() => {
-        return dateFilter
-        ? reports_data.filter((record) => record.date_testing === dateFilter)
-        : reports_data;
-    }, [reports_data, dateFilter]);
+  const filteredReports = useMemo(() => {
+    return dateFilter
+      ? reports_data.filter((record) => record.date_testing === dateFilter)
+      : reports_data;
+  }, [reports_data, dateFilter]);
 
-    const centerLabels = useMemo(() => {
-        if( dateFilter ){
+  const centerLabels = useMemo(() => {
+    if (dateFilter) {
+      let totalOptimalBiomarkers = 0;
+      substancesToInclude.forEach((substance) => {
+        filteredReports.forEach((record) => {
+          const value = Number(
+            record[substance as string as keyof ApiResponse]
+          );
+          const range = referenceForRanges[substance];
 
-            let totalOptimalBiomarkers = 0;
-            substancesToInclude.forEach((substance) => {
-                filteredReports.forEach((record) => {
-                    const value = Number(record[substance as string as keyof ApiResponse]);
-                    const range = referenceForRanges[substance];
+          if (value != null && range) {
+            if (value >= range.min && value <= range.max) {
+              totalOptimalBiomarkers += 1;
+            }
+          }
+        });
+      });
 
-                    if (value != null && range) {
-                        if (value >= range.min && value <= range.max) {
-                            totalOptimalBiomarkers += 1;
-                        }
-                    }
-                })
-            });
-
-            return {
-                centralNumber: totalOptimalBiomarkers,
-                centralLabel: `Optimal Biomarker${totalOptimalBiomarkers !== 1 ? 's' : ''}`,
-            };
-        }else {
-            return {
-                centralNumber: reports_data.length,
-                centralLabel: `Result${reports_data.length !== 1 ? 's' : ''} Summarized`,
-            };
-        }
-    }, [dateFilter, substancesToInclude, filteredReports, referenceForRanges, reports_data.length]);
+      return {
+        centralNumber: totalOptimalBiomarkers,
+        centralLabel: `Optimal Biomarker${
+          totalOptimalBiomarkers !== 1 ? "s" : ""
+        }`,
+      };
+    } else {
+      return {
+        centralNumber: reports_data.length,
+        centralLabel: `Result${
+          reports_data.length !== 1 ? "s" : ""
+        } Summarized`,
+      };
+    }
+  }, [
+    dateFilter,
+    substancesToInclude,
+    filteredReports,
+    referenceForRanges,
+    reports_data.length,
+  ]);
 
   useEffect(() => {
     const chartData: DataPoint[] = [];
@@ -113,16 +131,29 @@ const HeroSection = ({
     });
 
     setData(chartData);
-  }, [colorPalette, referenceForRanges, substances, unitFormatter, substanceFilter, dateFilter, reports_data, filteredReports]);
+  }, [
+    colorPalette,
+    referenceForRanges,
+    substances,
+    unitFormatter,
+    substanceFilter,
+    dateFilter,
+    reports_data,
+    filteredReports,
+  ]);
 
   return (
     <SectionContainer customStyles={customStyles}>
-      <RadialBiomarkerChart
-        data={data}
-        showCentralText
-        centralNumber={centerLabels.centralNumber} // Set the desired number here
-        centralLabel={centerLabels.centralLabel} // Set the desired label here
-      />
+      {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        <RadialBiomarkerChart
+          data={data}
+          showCentralText
+          centralNumber={centerLabels.centralNumber} // Set the desired number here
+          centralLabel={centerLabels.centralLabel} // Set the desired label here
+        />
+      )}
     </SectionContainer>
   );
 };
