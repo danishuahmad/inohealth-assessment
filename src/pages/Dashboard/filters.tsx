@@ -1,15 +1,12 @@
 import { useMemo } from "react";
 import { Stack, type SxProps } from "@mui/material";
-
 import DateFilter from "../../components/date-filter";
 import MultiSelectFilter from "../../components/multiselect-filter/index.tsx";
 import type { ApiResponse } from "./types.ts";
 
 type FiltersProps = {
-      customStyles?: SxProps;
-    
+  customStyles?: SxProps;
   reports_data: ApiResponse[];
-
   substances: string[];
   substanceFilter: string[];
   onSubstanceFilterChange: (substanceIds: string[]) => void;
@@ -22,9 +19,9 @@ const Filters = ({
   reports_data,
   substances,
   substanceFilter,
-  onSubstanceFilterChange: handleSubstanceFilterChange,
+  onSubstanceFilterChange,
   dateFilter,
-  onDateFilterChange: handleDateFilterChange,
+  onDateFilterChange,
 }: FiltersProps) => {
   const substanceFilterOptions = useMemo(() => {
     return substances.map((substance) => ({
@@ -47,30 +44,41 @@ const Filters = ({
   }, [reports_data]);
 
   return (
-    <Stack 
-    sx={{
-      ...customStyles,
-      flexWrap: "wrap",            
-      overflowX: "hidden",         
-      width: "100%",               
-      maxWidth: "100%",            
-      "& *": {
-        minWidth: 0,               
-      },
-    }}
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={2}
+      sx={{
+        ...customStyles,
+        flexWrap: "wrap",
+        width: "100%",
+        maxWidth: "100%",
+        overflowX: "hidden",
+      }}
     >
-      <Stack sx={{ minWidth: 300, maxWidth: 500 }}>
+      <Stack
+        sx={{
+          width: { xs: "100%", sm: "auto" },
+          minWidth: { xs: "100vw", sm: 300 },
+          maxWidth: { xs: "100vw", sm: 500 },
+        }}
+      >
         <DateFilter
           selectedDateId={dateFilter}
-          onChange={handleDateFilterChange}
+          onChange={onDateFilterChange}
           dates={availableReportDates}
         />
       </Stack>
-      <Stack flex={1}>
+
+      <Stack
+        sx={{
+          flex: 1,
+          width: { xs: "100%", sm: "auto" },
+        }}
+      >
         <MultiSelectFilter
           selectedIds={substanceFilter}
           options={substanceFilterOptions}
-          onChange={handleSubstanceFilterChange}
+          onChange={onSubstanceFilterChange}
         />
       </Stack>
     </Stack>
