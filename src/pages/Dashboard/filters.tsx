@@ -51,7 +51,6 @@ const Filters = ({
   }
 
   return (
-    <AnimationWrapper>
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={2}
@@ -70,11 +69,13 @@ const Filters = ({
             maxWidth: { xs: "100vw", sm: 500 },
           }}
         >
-          <DateFilter
-            selectedDateId={dateFilter}
-            onChange={onDateFilterChange}
-            dates={availableReportDates}
-          />
+          <AnimationWrapper>
+            <DateFilter
+              selectedDateId={dateFilter}
+              onChange={onDateFilterChange}
+              dates={availableReportDates}
+            />
+          </AnimationWrapper>
         </Stack>
 
         <Stack
@@ -83,14 +84,15 @@ const Filters = ({
             width: { xs: "100%", sm: "auto" },
           }}
         >
-          <MultiSelectFilter
-            selectedIds={substanceFilter}
-            options={substanceFilterOptions}
-            onChange={onSubstanceFilterChange}
-          />
+          <AnimationWrapper>
+            <MultiSelectFilter
+              selectedIds={substanceFilter}
+              options={substanceFilterOptions}
+              onChange={onSubstanceFilterChange}
+            />
+          </AnimationWrapper>
         </Stack>
       </Stack>
-    </AnimationWrapper>
   );
 };
 

@@ -23,7 +23,6 @@ const Dashboard = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const SUBSTANCES = useMemo(() => Object.values(SubstanceKeys), []);
 
-
   const [isHydrated, setIsHydrated] = useState(false);
   useEffect(() => {
     setIsHydrated(true);
@@ -40,7 +39,7 @@ const Dashboard = () => {
    */
   useEffect(() => {
     /** Retrieves URL parameters to feed the state */
-    if(!isHydrated) return;
+    if (!isHydrated) return;
     const urlParams = new URLSearchParams(window.location.search);
     const initialSubstances = urlParams.get("substances")
       ? urlParams.get("substances")!.split(",")
@@ -52,49 +51,73 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!isHydrated) return;
-  
+
     const params = new URLSearchParams();
-    if (substanceFilter.length > 0) params.set("substances", substanceFilter.join(","));
-    
+    if (substanceFilter.length > 0)
+      params.set("substances", substanceFilter.join(","));
+
     if (dateFilter) params.set("date", dateFilter);
-  
+
     const queryString = params.toString();
     const newUrl = queryString
       ? `${window.location.pathname}?${queryString}`
       : window.location.pathname;
-  
+
     // Only update if URL actually needs to change
     if (window.location.search !== (queryString ? `?${queryString}` : "")) {
       window.history.replaceState({}, "", newUrl);
     }
   }, [substanceFilter, dateFilter, isHydrated]);
+  // move from /? to /
+  useEffect(() => {
+    const currentUrl = window.location.href;
 
-  // --- When user selects a substance to view its trend
-  const handleSubstanceHistorySelect = useCallback((substance: string) => {
-    const data: { date: string; value: number }[] = [];
-    apiData?.map((record) => {
-      data.push({
-        date: record.date_testing,
-        value: record[substance as keyof typeof record] as number,
+    // Match URLs that end with "/?" (and nothing after "?")
+    if (currentUrl.endsWith("/?")) {
+      const cleanUrl = currentUrl.replace(/\/\?$/, "/");
+
+      // Use history.replaceState to clean without reloading the page
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else if (currentUrl.endsWith("?")) {
+      // Handle case like "http://example.com?"
+      const cleanUrl = currentUrl.slice(0, -1);
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }, []);
+
+  /**
+   * When user selects a substance to view its trend
+   */
+  const handleSubstanceHistorySelect = useCallback(
+    (substance: string) => {
+      const data: { date: string; value: number }[] = [];
+      apiData?.map((record) => {
+        data.push({
+          date: record.date_testing,
+          value: record[substance as keyof typeof record] as number,
+        });
       });
-    });
-    const unit = apiData?.[0][
-      `${substance}_unit` as keyof (typeof apiData)[0]
-    ] as string;
-    setSubstanceHistoryToShow({
-      label:
-        substance.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) +
-        ` (${unitFormatter(unit)})`,
-      data,
-      rangeMin:
-        REFERENCE_FOR_RANGES[substance as keyof typeof REFERENCE_FOR_RANGES]
-          .min,
-      rangeMax:
-        REFERENCE_FOR_RANGES[substance as keyof typeof REFERENCE_FOR_RANGES]
-          .max,
-      color: COLOR_PALETTE[substance as keyof typeof COLOR_PALETTE],
-    });
-  }, [apiData]);
+      const unit = apiData?.[0][
+        `${substance}_unit` as keyof (typeof apiData)[0]
+      ] as string;
+      setSubstanceHistoryToShow({
+        label:
+          substance
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase()) +
+          ` (${unitFormatter(unit)})`,
+        data,
+        rangeMin:
+          REFERENCE_FOR_RANGES[substance as keyof typeof REFERENCE_FOR_RANGES]
+            .min,
+        rangeMax:
+          REFERENCE_FOR_RANGES[substance as keyof typeof REFERENCE_FOR_RANGES]
+            .max,
+        color: COLOR_PALETTE[substance as keyof typeof COLOR_PALETTE],
+      });
+    },
+    [apiData]
+  );
 
   return (
     <Stack sx={{ maxHeight: "100%", maxWidth: "100%", pb: 2 }}>
