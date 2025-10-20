@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { type SxProps } from "@mui/material";
 
-import ReporDetail, { type Report } from "../../components/report-detail";
+import { type Report, ReportDetail } from "../../components/report-detail";
 import type { ApiResponse } from "./types";
 import SectionContainer from "../../components/section-container";
 import { LoadingSkeleton } from "./loading-skeleton";
@@ -92,7 +92,7 @@ const SecondarySection = ({
         <LoadingSkeleton />
       ) : (
         <AnimationWrapper>
-          <ReporDetail
+          <ReportDetail
             data={latestReportDetail}
             onSelect={handleSubstanceHistoryRequested}
           />
