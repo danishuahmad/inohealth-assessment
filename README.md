@@ -56,9 +56,9 @@ The application is deployed and accessible live on **Netlify** at the following 
 
 ## 🎨 Attributions
 
-### Favicon Icons
+### Favicon Icon
 
-The **favicon and related icons** used in this project were sourced from **Icon8**.
+The **favicon** used in this project were sourced from **Icon8**.
 
 ***
 
