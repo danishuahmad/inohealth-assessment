@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# InoHealth Home Assessment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a single-page application built with **Vite** as a home assessment assignment for InoHealth.
 
-Currently, two official plugins are available:
+***
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Installation and Setup
 
-## React Compiler
+Follow these steps to get the project up and running on your local machine.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+* **Node.js**: Ensure you have a stable version of Node.js installed (LTS recommended).
+* **npm**: The project includes a **`package-lock.json`** file, so **npm is the preferred package manager** to ensure exact dependency versions are installed.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Steps
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/danishuahmad/inohealth-assessment.git](https://github.com/danishuahmad/inohealth-assessment.git)
+    cd inohealth-assessment
+    ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+2.  **Install Dependencies (Preferred: npm):**
+    Use npm to install all necessary dependencies, leveraging the lock file for consistency.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    ```bash
+    npm install
+    ```
+    *(If you must use Yarn, delete the `package-lock.json` file first, and run `yarn install`)*
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+3.  **Run the Development Server (Vite):**
+    Start the Vite development server. This will typically open the application in your browser at `http://localhost:5173` (or similar).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+    ```bash
+    npm run dev
+    ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+***
+
+## 🌍 API Information
+
+This project fetches data from the following mock API endpoint:
+
+* **API Endpoint:** `https://mockapi-furw4tenlq-ez.a.run.app/data`
+
+***
+
+## 🌐 Deployment
+
+The application is deployed and accessible live on **Netlify** at the following URL:
+
+➡️ **[https://ino-health-by-danish.netlify.app/](https://ino-health-by-danish.netlify.app/)**
+
+***
+
+## 🎨 Attributions
+
+### Favicon Icons
+
+The **favicon and related icons** used in this project were sourced from **Icon8**.
+
+***
+
+## 📄 Licensing
+
+Add your chosen license information here (e.g., MIT, ISC).
