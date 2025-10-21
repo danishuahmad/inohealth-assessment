@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+
 import { DataContext, type DataContextType } from "./context";
+import { API_URL } from "../../config";
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -15,7 +17,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get("/api/data");
+      const response = await axios.get(`${API_URL}/data`);
       setData(response.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error fetching data");
