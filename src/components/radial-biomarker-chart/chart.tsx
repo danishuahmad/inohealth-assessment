@@ -112,27 +112,36 @@ export const RadialBiomarkerChart: React.FC<RadialChartProps> = ({
 
   // --- Dynamic Size Calculation (Container measurement) ---
   useEffect(() => {
+    let resizeTimeout: number | null = null;
+  
     const measure = () => {
-      if (containerRef.current) {
-        // Use a minimum of 400 for width/height or actual container size logic
-        // The original code was simplified, retaining that structure:
-        const { clientWidth } = containerRef.current;
-        const width = clientWidth || 400;
-        setDimensions({ width, height: Math.min(width, 400) }); // Ensure chart remains square/manageable
-      }
+      if (!containerRef.current) return;
+      const { clientWidth } = containerRef.current;
+      const width = clientWidth || 400;
+      const height = Math.min(width, 400);
+  
+      // Only update if dimensions actually changed
+      setDimensions(prev => {
+        if (prev.width === width && prev.height === height) return prev;
+        return { width, height };
+      });
     };
-
-    const timeout = setTimeout(measure, 50);
-    window.addEventListener("resize", measure);
-
+  
+    const handleResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(measure, 200); // debounce
+    };
+  
+    // Initial measure
     measure();
-
+    window.addEventListener("resize", handleResize);
+  
     return () => {
-      clearTimeout(timeout);
-      window.removeEventListener("resize", measure);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      window.removeEventListener("resize", handleResize);
     };
   }, [data]);
-
+  
   // --- Responsive Scaling Calculation ---
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
