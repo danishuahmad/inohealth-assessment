@@ -40,7 +40,11 @@ const Filters = ({
     reports_data.forEach((dataPoint) => {
       datesSet.add({
         id: dataPoint.date_testing,
-        label: new Date(dataPoint.date_testing).toLocaleDateString(),
+        label: new Date(dataPoint.date_testing).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
       });
     });
     return Array.from(datesSet).sort();

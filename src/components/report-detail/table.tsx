@@ -16,7 +16,11 @@ export const ReportDetailTable = ({ data, onSelect: handleSelect }: ReportDetail
   const firstDate = data[0]?.date;
   const formattedDate = useMemo(() => {
     if (!firstDate) return "";
-    return new Date(firstDate).toLocaleDateString();
+    return new Date(firstDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   }, [firstDate]);
 
   return (

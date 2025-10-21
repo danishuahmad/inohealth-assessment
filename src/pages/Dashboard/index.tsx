@@ -94,7 +94,11 @@ const Dashboard = () => {
       const data: { date: string; value: number }[] = [];
       apiData?.map((record) => {
         data.push({
-          date: record.date_testing,
+          date: new Date(record.date_testing).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
           value: record[substance as keyof typeof record] as number,
         });
       });

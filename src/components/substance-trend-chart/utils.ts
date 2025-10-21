@@ -34,7 +34,7 @@ export const drawDots = (
 
     // Drop-in transition for the circles
     .transition()
-    .delay((_d, i) => 1500 + i * 50) // Delay until line animation is done (1500ms) + stagger
+    .delay((_d, i) => 50 + i * 50) // Delay until line animation is done (1500ms) + stagger
     .duration(300)
     .ease(d3.easeQuadOut)
     .attr("cy", (d) => yScale(d.value)) // Animate to final Y position
